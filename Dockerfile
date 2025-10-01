@@ -1,11 +1,13 @@
 # ---------- Build stage ----------
-FROM alpine:3.22.1 AS builder
+FROM --platform=$BUILDPLATFORM alpine:3.22.1 AS builder
 
 ARG TARGETOS=linux
-ARG TARGETARCH=amd64
+ARG TARGETARCH
 ARG KUBECTL_VERSION=v1.33.4
 ARG HELM_VERSION=v3.18.5
 ARG KUSTOMIZE_VERSION=v5.7.1
+
+RUN echo "$TARGETARCH"
 
 RUN apk add --no-cache curl tar gzip coreutils grep
 

@@ -3,6 +3,7 @@ name: build
 on:
   push:
     branches:
+      - 'build-test'
       - 'master'
       - 'release-*'
     tags:
@@ -38,33 +39,33 @@ jobs:
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}
 
-      - name: Login to Aliyun
-        uses: docker/login-action@v3
-        with:
-          registry: registry.cn-beijing.aliyuncs.com
-          username: ${{ secrets.ALIYUNCS_USERNAME }}
-          password: ${{ secrets.ALIYUNCS_PASSWORD }}
+      # - name: Login to Aliyun
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: registry.cn-beijing.aliyuncs.com
+      #     username: ${{ secrets.ALIYUNCS_USERNAME }}
+      #     password: ${{ secrets.ALIYUNCS_PASSWORD }}
 
-      - name: Login to Docker
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          
+      # - name: Login to Docker
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+
       # - name: Login to HUAWEICLOUD
       #   uses: docker/login-action@v3
       #   with:
       #     registry: swr.cn-southwest-2.myhuaweicloud.com
       #     username: ${{ secrets.HUAWEICLOUD_USERNAME }}
       #     password: ${{ secrets.HUAWEICLOUD_PASSWORD }}
-          
+
       - name: Build and push Docker images
         uses: docker/build-push-action@v3
         with:
           tags: |
             docker.io/kubesphere/kubectl:${{ steps.prepare.outputs.version }}
             registry.cn-beijing.aliyuncs.com/kubesphereio/kubectl:${{ steps.prepare.outputs.version }}
-          push: true
+          push: false
           platforms: linux/amd64,linux/arm64
 
       # - name: Sync images to HUAWEICLOUD
@@ -73,4 +74,3 @@ jobs:
       #     docker pull kubesphere/kubectl:${{ steps.prepare.outputs.version }}
       #     docker tag kubesphere/kubectl:${{ steps.prepare.outputs.version }} swr.cn-southwest-2.myhuaweicloud.com/ks/kubesphere/kubectl:${{ steps.prepare.outputs.version }}
       #     docker push swr.cn-southwest-2.myhuaweicloud.com/ks/kubesphere/kubectl:${{ steps.prepare.outputs.version }}
-          
